@@ -2,8 +2,6 @@ Require Import Autosubst2.syntax unscoped.
 Require Import ssreflect ssrbool.
 From Hammer Require Import Tactics.
 
-Scheme Equality for Tm.
-
 Definition Basis := list (Level * Tm).
 
 Fixpoint lookup n (Γ : Basis) :=
@@ -112,3 +110,5 @@ with WellFormed : Basis -> Prop :=
   ⊢ cons (ℓ0, A) Γ
 where "Γ ⊢ a ∈ A" := (WellTyped Γ a A)
 and "⊢ Γ" := (WellFormed Γ).
+Always Interpret the A from Pi irr A B but what about a : A?
+What about Squash A? What about Let?
