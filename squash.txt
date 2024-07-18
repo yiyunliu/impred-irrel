@@ -1,0 +1,4 @@
+(forall I, cand I -> I j A P)
+(forall P, I j A P -> P -> |- A : Univ j)
+----------------------------------
+[Squash A] \ { a | a Downarrow box b, P }
