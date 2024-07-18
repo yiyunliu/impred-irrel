@@ -1,4 +1,4 @@
-Require Import Autosubst2.syntax unscoped.
+Require Import Autosubst2.syntax unscoped par.
 Require Import ssreflect ssrbool.
 From Hammer Require Import Tactics.
 
@@ -81,7 +81,8 @@ Inductive WellTyped : Basis -> Tm -> Tm -> Prop :=
   (* ----------- *)
   Γ ⊢ Squash A ∈ Univ j
 
-| T_Box Γ a A :
+| T_Box Γ a A i :
+  Γ ⊢ A ∈ Univ i ->
   resurrect Γ ⊢ a ∈ A ->
   (* ----------- *)
   Γ ⊢ Box a ∈ Squash A
@@ -96,6 +97,7 @@ Inductive WellTyped : Basis -> Tm -> Tm -> Prop :=
 | T_Conv Γ a A B i :
   Γ ⊢ a ∈ A ->
   Γ ⊢ B ∈ Univ i ->
+  Coherent A B ->
   (* ----------- *)
   Γ ⊢ a ∈ B
 
@@ -110,5 +112,3 @@ with WellFormed : Basis -> Prop :=
   ⊢ cons (ℓ0, A) Γ
 where "Γ ⊢ a ∈ A" := (WellTyped Γ a A)
 and "⊢ Γ" := (WellFormed Γ).
-Always Interpret the A from Pi irr A B but what about a : A?
-What about Squash A? What about Let?
