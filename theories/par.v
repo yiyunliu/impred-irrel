@@ -148,7 +148,7 @@ with nf (a : Tm) : bool :=
   match a with
   | VarTm _ => true
   | App a b => ne a && nf b
-  | Abs _ => false
+  | Abs a => nf a
   | Pi A B => nf A && nf B
   | Univ _ => true
   | Empty => true
