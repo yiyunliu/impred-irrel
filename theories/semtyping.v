@@ -1,4 +1,6 @@
 Require Import Autosubst2.syntax unscoped par typing.
+Require Import ssreflect.
+From Hammer Require Import Tactics.
 
 Definition ProdSpace (PA : Tm -> Prop) (PF : Tm -> (Tm -> Prop) -> Prop) (b : Tm) :=
   forall a PB, PA a -> PF a PB -> PB (App b a).
@@ -24,7 +26,7 @@ Inductive InterpExt i I : Tm -> (Tm -> Prop) -> Prop :=
   InterpExt i I (Pi A B) (ProdSpace PA PF)
 
 (* TODO *)
-(* Try use candidates to capture the definition of InterpExtSquashed? *)
+(* Try using candidates to capture the definition of InterpExtSquashed? *)
 | InterpExt_Squash j A  P :
   (* Latest thoughts: *)
   (* What if we don't pass in I but something else that's more generic? *)
@@ -42,6 +44,18 @@ Inductive InterpExt i I : Tm -> (Tm -> Prop) -> Prop :=
   InterpExt i I A0 PA ->
   InterpExt i I A PA.
 
+Lemma InterpExt_same_inhab i I0 I1 A S0 S1 :
+  InterpExt i I0 A S0 ->
+  InterpExt i I1 A S1 ->
+  ((exists a, S0 a) <-> (exists a, S1 a)).
+Proof.
+  move => h. move : I1 S1.
+  elim : i I0 A S0 / h.
+  - move => i I0 A B PA PF hPA ihPA hTot hRes ihPF I1 S1.
+    admit.
+  - admit.
+  - admit.
+  -
 (* Idea: the contravariance of function arguments might matter less if
 the entire thing is a proposition (we only care about whether the
 output is inhabited). In other words,   *)
