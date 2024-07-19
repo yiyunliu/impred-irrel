@@ -1,8 +1,7 @@
 Require Import Autosubst2.syntax unscoped FunInd.
-From stdpp Require Import relations.
+From stdpp Require Import relations (rtc(..)).
 
 Reserved Infix "⇒" (at level 60, right associativity).
-
 Inductive Par : Tm -> Tm -> Prop :=
 | P_Var i :
   (* ------- *)
@@ -47,6 +46,13 @@ Inductive Par : Tm -> Tm -> Prop :=
   b0 ⇒ b1 ->
   (* ------------------------- *)
   Let (Box a0) b0 ⇒ subst_Tm (scons a1 ids) b1
+| P_Empty :
+  (* ----------- *)
+  Empty ⇒ Empty
+| P_Absurd a0 a1 :
+  a0 ⇒ a1 ->
+  (* ------------------- *)
+  Absurd a0 ⇒ Absurd a1
 where "A ⇒ B" := (Par A B).
 
 Definition Coherent A B := exists C, rtc Par A C /\ rtc Par B C.

@@ -97,6 +97,17 @@ Inductive WellTyped : Basis -> Tm -> Tm -> Prop :=
   (* ------------------------- *)
   Γ ⊢ Let a b ∈ subst_Tm (scons a ids) B
 
+| T_Empty Γ i :
+  ⊢ Γ ->
+  (* --------- *)
+  Γ ⊢ Empty ∈ Univ i
+
+| T_Absurd Γ a A i :
+  resurrect Γ ⊢ a ∈ Empty ->
+  Γ ⊢ A ∈ Univ i ->
+  (* --------- *)
+  Γ ⊢ Absurd a ∈ A
+
 | T_Conv Γ a A B i :
   Γ ⊢ a ∈ A ->
   Γ ⊢ B ∈ Univ i ->
