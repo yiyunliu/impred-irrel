@@ -2,8 +2,6 @@ Require Import Autosubst2.syntax unscoped par.
 Require Import ssreflect ssrbool.
 From Hammer Require Import Tactics.
 
-Variant Level := Rel | Irrel.
-
 Definition Basis := list (Level * Tm).
 
 Fixpoint lookup n (Γ : Basis) :=
