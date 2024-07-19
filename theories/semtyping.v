@@ -9,7 +9,6 @@ Definition ProdSpace (PA : Tm -> Prop) (PF : Tm -> (Tm -> Prop) -> Prop) (b : Tm
   forall a PB, PA a -> PF a PB -> PB (App b a).
 
 Inductive InterpExt i I : Tm -> (Tm -> Prop) -> Prop :=
-| InterpExt_Ne A
 | InterpExt_Fun A B PA PF :
   InterpExt i I A PA ->
   (forall a, PA a -> exists PB, PF a PB) ->
@@ -95,14 +94,39 @@ Proof.
   elim : T P / h => //.
   - hauto l:on.
   - move => *. subst.
-    admit.
-Admitted.
+    hauto lq:on rew:off inv:Par ctrs:InterpExt use:Par_subst.
+Qed.
 
+Lemma InterpExt_Fun_nopf i I A B PA :
+  InterpExt i I A PA ->
+  (forall a, PA a -> exists PB, InterpExt i I (subst_Tm (scons a ids) B) PB) ->
+  InterpExt i I (Pi A B) (ProdSpace PA (fun a PB => InterpExt i I (subst_Tm (scons a ids) B) PB)).
+Proof. hauto l:on ctrs:InterpExt. Qed.
+
+Lemma InterpExt_cumulative i j I A PA :
+  i <= j ->
+  InterpExt i I A PA ->
+  InterpExt j I A PA.
+Proof.
+  move => h h0.
+  elim : A PA /h0;
+    hauto l:on ctrs:InterpExt use:PeanoNat.Nat.le_trans.
+Qed.
+
+Lemma InterpUnivN_cumulative i j A PA :
+  i <= j ->
+  InterpUnivN i A PA ->
+  InterpUnivN j A PA.
+Proof.
+  hauto l:on rew:db:InterpUniv use:InterpExt_cumulative.
+Qed.
+
+Lemma InterpExt_preservation i I A B P (h : ⟦ Ξ ⊨ A ⟧ i ; I ↘ P) :
+  (A ⇒ B) ->
+  ⟦ Ξ ⊨ B ⟧ i ; I ↘ P.
 
 Definition ρ_ok Γ := forall i ℓ A,
     Lookup i Γ ℓ A ->
     match ℓ with
     | Irrel => True
     | Rel => forall m PA, InterpUnivN .
-
-IOk (c2e Δ) ℓ (ρ i) /\ forall m PA, ⟦ c2e Δ ⊨ A [ρ] ⟧ m ↘ PA -> PA ℓ (ρ i).
