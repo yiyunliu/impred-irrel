@@ -2,6 +2,8 @@ Require Import Autosubst2.syntax unscoped par.
 Require Import ssreflect ssrbool.
 From Hammer Require Import Tactics.
 
+Variant Level := Rel | Irrel.
+
 Definition Basis := list (Level * Tm).
 
 Fixpoint lookup n (Γ : Basis) :=
@@ -58,23 +60,24 @@ Inductive WellTyped : Basis -> Tm -> Tm -> Prop :=
   (* ------------- *)
   Γ ⊢ Univ i ∈ Univ (S i)
 
-| T_Pi Γ i j ℓ0 A B :
+| T_Pi Γ i j A B :
   Γ ⊢ A ∈ Univ i ->
-  cons (ℓ0, A) Γ ⊢ B ∈ Univ j ->
+  cons (Rel, A) Γ ⊢ B ∈ Univ j ->
   (* --------------------- *)
-  Γ ⊢ Pi ℓ0 A B ∈ Univ (cmax ℓ0 i j)
+  Γ ⊢ Pi A B ∈ Univ (max i j)
 
-| T_Abs Γ i ℓ0 A B b :
-  Γ ⊢ Pi ℓ0 A B ∈ Univ i ->
-  cons (ℓ0, A) Γ ⊢ b ∈ B ->
+| T_Abs Γ i A B b :
+  Γ ⊢ Pi A B ∈ Univ i ->
+  cons (Rel, A) Γ ⊢ b ∈ B ->
   (* --------------------- *)
-  Γ ⊢ Abs ℓ0 b ∈ Pi ℓ0 A B
+  Γ ⊢ Abs b ∈ Pi A B
 
-| T_App Γ ℓ0 b a A B :
-  Γ ⊢ b ∈ Pi ℓ0 A B ->
-  cresurrect ℓ0 Γ ⊢ a ∈ A ->
+| T_App Γ b a A B :
+  Γ ⊢ b ∈ Pi A B ->
+  (* cresurrect ℓ *)
+  Γ ⊢ a ∈ A ->
   (* -------------------- *)
-  Γ ⊢ App ℓ0 b a ∈ subst_Tm (scons a ids) B
+  Γ ⊢ App b a ∈ subst_Tm (scons a ids) B
 
 | T_Squash Γ A i j :
   Γ ⊢ A ∈ Univ i ->

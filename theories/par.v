@@ -1,4 +1,4 @@
-Require Import Autosubst2.syntax unscoped.
+Require Import Autosubst2.syntax unscoped FunInd.
 From stdpp Require Import relations.
 
 Reserved Infix "⇒" (at level 60, right associativity).
@@ -10,25 +10,25 @@ Inductive Par : Tm -> Tm -> Prop :=
 | P_Univ n :
   (* -------- *)
   Univ n ⇒ Univ n
-| P_Pi ℓ A0 A1 B0 B1 :
+| P_Pi A0 A1 B0 B1 :
   A0 ⇒ A1 ->
   B0 ⇒ B1 ->
   (* --------------------- *)
-  Pi ℓ A0 B0 ⇒ Pi ℓ A1 B1
-| P_Abs ℓ a0 a1 :
+  Pi A0 B0 ⇒ Pi A1 B1
+| P_Abs a0 a1 :
   a0 ⇒ a1 ->
   (* -------------------- *)
-  Abs ℓ a0 ⇒ Abs ℓ a1
-| P_App ℓ a0 a1 b0 b1 :
+  Abs a0 ⇒ Abs a1
+| P_App a0 a1 b0 b1 :
   a0 ⇒ a1 ->
   b0 ⇒ b1 ->
   (* ------------------------- *)
-  App ℓ a0 b0 ⇒ App ℓ a1 b1
-| P_AppAbs ℓ a a0 b0 b1 :
+  App a0 b0 ⇒ App a1 b1
+| P_AppAbs a a0 b0 b1 :
   a ⇒ a0 ->
   b0 ⇒ b1 ->
   (* ---------------------------- *)
-  App ℓ (Abs ℓ a) b0 ⇒ subst_Tm (scons b1 ids) a0
+  App (Abs a) b0 ⇒ subst_Tm (scons b1 ids) a0
 | P_Squash A0 A1 :
   A0 ⇒ A1 ->
   (* ------------------- *)
